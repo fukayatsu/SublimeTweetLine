@@ -26,8 +26,13 @@ class TweetLineCommand(sublime_plugin.TextCommand):
         tweet_text = re.sub(r"^\s+", "", line)
 
         if sublime.ok_cancel_dialog("Tweet this?\n\n" + tweet_text, "Tweet"):
-            tweet_text = tweet_text.encode('utf8')
-            api.PostUpdate(tweet_text)
-            print "complete."
+            tweet_text_utf8 = tweet_text.encode('utf8')
+            try:
+                api.PostUpdate(tweet_text_utf8)
+                print "complete."
+                sublime.status_message('tweet complete! "' + tweet_text + '"')
+            except:
+                print "error"
+                sublime.status_message('tweet error :(')
         else:
             print "Cancel"
