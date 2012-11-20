@@ -4,29 +4,27 @@ import sublime
 import sublime_plugin
 import re
 import libs.twitter as twitter
-import libs.AccessTokenFactory as factory
+from libs.AccessTokenFactory import AccessTokenFactory
 import json
 
 
 class TweetLineCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-
         self.settings = Settings()
-        if not self.settings.settings['token_key']:
+        if not self.settings.data['token_key']:
             self.view.window().run_command('input_pincode')
             return
 
         api = twitter.Api(
             consumer_key        = '1uFNM4QtiqRGB1ZQGKUY8g',
             consumer_secret     = 'BeCH5j8ZPmum357xEF9tvVf1VttVWY2E8hpcfk0',
-            access_token_key    = self.settings.settings['token_key'],
-            access_token_secret = self.settings.settings['token_secret'],
+            access_token_key    = self.settings.data['token_key'],
+            access_token_secret = self.settings.data['token_secret'],
             input_encoding      = 'utf8'
         )
 
         first_region = self.view.sel()[0]
-        # region_of_line = self.view.full_line(region)  # including line end
         region_of_line = self.view.line(first_region)
         line = self.view.substr(region_of_line)
         tweet_text = re.sub(r"^\s+", "", line)
@@ -51,7 +49,7 @@ class InputPincodeCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         self.window.show_input_panel('input pincode:', '', self.on_input_pin, None, None)
-        self.tokenFactory = factory.AccessTokenFactory()
+        self.tokenFactory = AccessTokenFactory()
         import webbrowser
         webbrowser.open(self.tokenFactory.getTempToken())
 
@@ -68,10 +66,11 @@ class InputPincodeCommand(sublime_plugin.WindowCommand):
             return
 
         self.access_token_key, self.access_token_secret = keys
-        self.settings.settings['token_key'] = self.access_token_key
-        self.settings.settings['token_secret'] = self.access_token_secret
-        self.settings.saveAll()
+        self.settings.data['token_key'] = self.access_token_key
+        self.settings.data['token_secret'] = self.access_token_secret
+        self.settings.save()
         sublime.status_message('You are authorized!')
+
 
 class Settings:
     def __init__(self, filename='SublimeTweetLine.settings'):
@@ -80,18 +79,19 @@ class Settings:
             'token_secret': None,
         }
         self.filename = sublime.packages_path() + '/User/' + filename
-        self.settings = self.loadAll()
+        self.data = self.load()
 
-    def loadAll(self):
+    def load(self):
         try:
+            print self.filename
             setting_json = open(self.filename).read()
             return json.loads(setting_json)
         except:
             return self.defaults
 
-    def saveAll(self):
+    def save(self):
         try:
             with open(self.filename, 'w') as f:
-                f.write(json.dumps(self.settings, sort_keys=True, indent=2))
+                f.write(json.dumps(self.data, sort_keys=True, indent=2))
         except:
             print 'save error'
