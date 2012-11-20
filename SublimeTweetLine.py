@@ -26,9 +26,12 @@ class TweetLineCommand(sublime_plugin.TextCommand):
         )
 
         first_region = self.view.sel()[0]
-        region_of_line = self.view.line(first_region)
-        line = self.view.substr(region_of_line)
-        tweet_text = re.sub(r"^\s+", "", line)
+        if (first_region.a == first_region.b):
+            region_of_line = self.view.line(first_region)
+            line = self.view.substr(region_of_line)
+            tweet_text = re.sub(r"^\s+", "", line)
+        else:
+            tweet_text = self.view.substr(first_region)
 
         if sublime.ok_cancel_dialog("Tweet this?\n\n" + tweet_text, "Tweet"):
             tweet_text_utf8 = tweet_text.encode('utf8')
