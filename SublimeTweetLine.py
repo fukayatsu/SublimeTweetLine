@@ -51,12 +51,12 @@ class InputPincodeCommand(sublime_plugin.WindowCommand):
     def run(self):
         self.window.show_input_panel('input pincode:', '', self.on_input_pin, None, None)
         self.tokenFactory = AccessTokenFactory()
-        webbrowser.open(self.tokenFactory.getTempToken())
+        webbrowser.open(self.tokenFactory.get_authorization_url())
 
     def on_input_pin(self, text):
         try:
             pincode = int(text)
-            keys = self.tokenFactory.getAccessToken(pincode)
+            keys = self.tokenFactory.get_access_token(pincode)
         except ValueError:
             print 'Invalid pincode?, try again'
             return

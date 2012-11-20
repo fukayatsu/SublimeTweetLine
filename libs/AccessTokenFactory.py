@@ -36,7 +36,7 @@ class AccessTokenFactory:
     self.AUTHORIZATION_URL = 'https://api.twitter.com/oauth/authorize'
     self.SIGNIN_URL        = 'https://api.twitter.com/oauth/authenticate'
 
-  def getTempToken(self):
+  def get_authorization_url(self):
     self.signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()
     self.oauth_consumer             = oauth.Consumer(key=self.consumer_key, secret=self.consumer_secret)
     self.oauth_client               = oauth.Client(self.oauth_consumer)
@@ -50,7 +50,7 @@ class AccessTokenFactory:
       return '%s?oauth_token=%s' % (self.AUTHORIZATION_URL, self.request_token['oauth_token'])
 
 
-  def getAccessToken(self, pin):
+  def get_access_token(self, pin):
     token = oauth.Token(self.request_token['oauth_token'], self.request_token['oauth_token_secret'])
     token.set_verifier(pin)
 
