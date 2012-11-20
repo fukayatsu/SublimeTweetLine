@@ -6,6 +6,7 @@ import re
 import libs.twitter as twitter
 from libs.AccessTokenFactory import AccessTokenFactory
 import json
+import webbrowser
 
 
 class TweetLineCommand(sublime_plugin.TextCommand):
@@ -50,7 +51,6 @@ class InputPincodeCommand(sublime_plugin.WindowCommand):
     def run(self):
         self.window.show_input_panel('input pincode:', '', self.on_input_pin, None, None)
         self.tokenFactory = AccessTokenFactory()
-        import webbrowser
         webbrowser.open(self.tokenFactory.getTempToken())
 
     def on_input_pin(self, text):
@@ -72,6 +72,12 @@ class InputPincodeCommand(sublime_plugin.WindowCommand):
         sublime.status_message('You are authorized!')
 
 
+class DeleteTokenCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        settings = Settings()
+        settings.truncate()
+
+
 class Settings:
     def __init__(self, filename='SublimeTweetLine.settings'):
         self.defaults = {
@@ -83,7 +89,6 @@ class Settings:
 
     def load(self):
         try:
-            print self.filename
             setting_json = open(self.filename).read()
             return json.loads(setting_json)
         except:
@@ -95,3 +100,9 @@ class Settings:
                 f.write(json.dumps(self.data, sort_keys=True, indent=2))
         except:
             print 'save error'
+
+    def truncate(self):
+        try:
+            open(self.filename, 'w').close()
+        except:
+            print 'truncate error'

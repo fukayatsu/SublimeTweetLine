@@ -1,6 +1,10 @@
 [
   {
-    "caption": "TweetLine",
+    "caption": "TweetLine: Tweet this line",
     "command": "tweet_line"
+  },
+  {
+    "caption": "TweetLine: Delete token (logout)",
+    "command": "delete_token"
   }
 ]
