@@ -5,7 +5,7 @@ make it easy to tweet from Sublime Text 2
 
     git clone git://github.com/fukayatsu/SublimeTweetLine.git your/path/to/Sublime Text 2/Packages/
 
-or from the package controll(soon)
+or from the package controll (maybe soon)
 
 ## Usage
 
