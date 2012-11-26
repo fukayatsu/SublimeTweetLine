@@ -2,10 +2,10 @@
 make it easy to tweet from Sublime Text 2
 
 ## Installation
+from `Sublime Package Control` as **TweetLine**
 
+or
     git clone git://github.com/fukayatsu/SublimeTweetLine.git your/path/to/Sublime Text 2/Packages/
-
-or from the package controll (maybe soon)
 
 ## Usage
 
